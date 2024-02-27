@@ -2,6 +2,16 @@ import React, { useState, useEffect } from 'react'
 import { MdDelete } from 'react-icons/md'
 import { FiEdit } from 'react-icons/fi'
 import { useAuth } from '../context/AuthContext'
+import { db } from '../../firebase'
+import {
+  collection,
+  doc,
+  setDoc,
+  updateDoc,
+  deleteDoc,
+  arrayUnion,
+  getDoc
+} from 'firebase/firestore'
 
 export default function JobApplication() {
   const [company, setCompany] = useState('')
@@ -12,49 +22,94 @@ export default function JobApplication() {
   const { currentUser } = useAuth()
 
   useEffect(() => {
-    const storedApplications = localStorage.getItem('applications')
-    if (storedApplications) {
-      setApplications(JSON.parse(storedApplications))
+    const fetchApplications = async () => {
+      if (currentUser) {
+        try {
+          const userRef = doc(db, 'users', currentUser.uid)
+          const docSnap = await getDoc(userRef)
+          if (docSnap.exists()) {
+            const userData = docSnap.data()
+            if (userData.applications) {
+              setApplications(userData.applications)
+            }
+          }
+        } catch (error) {
+          console.error('Error fetching applications: ', error)
+        }
+      }
     }
-  }, [])
 
-  useEffect(() => {
-    localStorage.setItem('applications', JSON.stringify(applications))
-  }, [applications])
+    fetchApplications()
+  }, [currentUser])
 
-  function handleSubmit(e) {
+  // Add application function
+  const handleSubmit = async (e) => {
     e.preventDefault()
     if (company.trim() === '' || position.trim() === '') return
 
     const newApplication = {
-      id: applications.length + 1,
       company,
       position,
       status
     }
 
-    setApplications([...applications, newApplication])
+    try {
+      if (currentUser) {
+        const userRef = doc(db, 'users', currentUser.uid)
+        await updateDoc(userRef, {
+          applications: arrayUnion(newApplication)
+        })
+        setApplications([...applications, newApplication]) // Update local state
+      }
+    } catch (error) {
+      console.error('Error adding document: ', error)
+    }
+
     setCompany('')
     setPosition('')
   }
 
-  function handleDeleteApplication(id) {
-    setApplications(applications.filter((app) => app.id !== id))
+  // Delete application function
+  const handleDeleteApplication = async (id) => {
+    try {
+      if (currentUser) {
+        const updatedApplications = applications.filter((app) => app.id !== id)
+        const userRef = doc(db, 'users', currentUser.uid)
+        await updateDoc(userRef, {
+          applications: updatedApplications
+        })
+        setApplications(updatedApplications)
+      }
+    } catch (error) {
+      console.error('Error deleting document: ', error)
+    }
   }
 
-  function handleStatusChange(id, newStatus) {
-    setApplications(
-      applications.map((app) =>
+  // Update status function
+  const handleStatusChange = async (id, newStatus) => {
+    try {
+      const updatedApplications = applications.map((app) =>
         app.id === id ? { ...app, status: newStatus } : app
       )
-    )
+      if (currentUser) {
+        const userRef = doc(db, 'users', currentUser.uid)
+        await updateDoc(userRef, {
+          applications: updatedApplications
+        })
+        setApplications(updatedApplications)
+      }
+    } catch (error) {
+      console.error('Error updating document: ', error)
+    }
   }
 
+  // Filtered applications
   const filteredApplications = applications.filter((app) => {
     if (filter === 'all') return true
     return app.status === filter
   })
 
+  // JSX rendering
   return (
     <div className="app-container">
       <h1>Job Application Tracker</h1>
@@ -111,8 +166,8 @@ export default function JobApplication() {
         {filteredApplications.length === 0 && (
           <li>No applications to display.</li>
         )}
-        {filteredApplications.map((app) => (
-          <li key={app.id}>
+        {filteredApplications.map((app, index) => (
+          <li key={index}>
             <div>
               <strong>Company:</strong> {app.company}
             </div>
