@@ -119,7 +119,7 @@ export default function JobApplication() {
 
   // JSX rendering
   return (
-    <div className="app-container">
+    <div className="job-application-container">
       <button className="btn logout-btn" onClick={logout}>
         <FaSignOutAlt className="icon" /> Logout
       </button>

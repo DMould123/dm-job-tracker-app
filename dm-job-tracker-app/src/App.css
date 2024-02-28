@@ -1,32 +1,63 @@
+/* Global Styles */
+body {
+  font-family: Arial, sans-serif; /* Set a fallback font */
+  margin: 0; /* Remove default margin */
+  padding: 0; /* Remove default padding */
+}
+
 /* App Container */
 .app-container {
   max-width: 800px;
-  margin: 0 auto;
+  margin: 20px auto; /* Center the container vertically and horizontally */
   padding: 20px;
   background-color: #f8f9fa; /* Light gray background */
+  border-radius: 8px; /* Add some border radius for softer edges */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle shadow for elevation */
 }
 
-/* New Application Form */
-.new-application-form {
-  margin-bottom: 20px;
-}
-
-.new-application-form-row {
-  margin-bottom: 10px;
-}
-
-.new-application-form label {
+/* Logo */
+.app-logo {
   display: block;
+  margin: 0 auto 20px; /* Center the logo horizontally and add some bottom margin */
+  max-width: 100%;
 }
 
-.new-application-form input,
-.new-application-form select {
+/* Header */
+.header {
+  margin-top: 20px;
+  margin-bottom: 20px; /* Add some bottom margin */
+  font-size: 24px;
+  color: #333; /* Dark gray text */
+}
+
+/* Logged-in User */
+.logged-in-user {
+  margin-bottom: 20px; /* Add some bottom margin */
+}
+
+/* Form Styles */
+form {
+  margin-bottom: 20px; /* Add some bottom margin */
+}
+
+label {
+  display: block;
+  margin-bottom: 5px; /* Add some bottom margin */
+  font-weight: bold; /* Make labels bold */
+}
+
+input,
+select {
   width: 100%; /* Make inputs and selects take full width */
-  padding: 8px;
+  padding: 10px;
   font-size: 16px;
   margin-top: 4px;
   border: 1px solid #ced4da; /* Gray border */
   border-radius: 4px;
+}
+
+select {
+  appearance: none; /* Remove default appearance for selects */
 }
 
 /* Buttons */
@@ -38,17 +69,11 @@
   cursor: pointer;
   font-size: 16px;
   border-radius: 4px;
+  margin-top: 10px; /* Add some top margin */
 }
 
 .btn-danger {
   background-color: #dc3545;
-}
-
-/* Header */
-.header {
-  margin-top: 20px;
-  font-size: 24px;
-  color: #333; /* Dark gray text */
 }
 
 /* Application List */
@@ -68,6 +93,7 @@
 /* Application Filter Buttons */
 .application-filter-buttons {
   display: flex; /* Make buttons display in a row */
+  flex-wrap: wrap; /* Wrap buttons if space is limited */
 }
 
 .application-filter-buttons button {
@@ -78,6 +104,7 @@
   cursor: pointer;
   border-radius: 4px;
   margin-right: 5px;
+  margin-bottom: 5px; /* Add some bottom margin */
 }
 
 .application-filter-buttons button:last-child {
@@ -90,13 +117,9 @@
     padding: 10px;
   }
 
-  .new-application-form input,
-  .new-application-form select {
-    width: calc(100% - 16px); /* Adjust width to account for padding */
-  }
-
-  .application-filter-buttons {
-    flex-wrap: wrap; /* Wrap buttons to new line if space is limited */
+  input,
+  select {
+    width: calc(100% - 20px); /* Adjust width to account for padding */
   }
 
   .application-filter-buttons button {
