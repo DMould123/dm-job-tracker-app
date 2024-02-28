@@ -13,7 +13,7 @@ import {
   arrayUnion,
   getDoc
 } from 'firebase/firestore'
-import { v4 as uuidv4 } from 'uuid' // Import UUID library
+import { v4 as uuidv4 } from 'uuid'
 
 export default function JobApplication() {
   const [company, setCompany] = useState('')
@@ -56,7 +56,8 @@ export default function JobApplication() {
       id: uuidv4(), // Generate unique ID
       company,
       position,
-      status
+      status,
+      timestamp: new Date().toISOString() // Add timestamp
     }
 
     try {
@@ -65,7 +66,7 @@ export default function JobApplication() {
         await updateDoc(userRef, {
           applications: arrayUnion(newApplication)
         })
-        setApplications([...applications, newApplication]) // Update local state
+        setApplications([...applications, newApplication])
       }
     } catch (error) {
       console.error('Error adding document: ', error)
@@ -172,6 +173,28 @@ export default function JobApplication() {
         <button onClick={() => setFilter('interview')}>Interview</button>
         <button onClick={() => setFilter('offer')}>Offer</button>
         <button onClick={() => setFilter('rejected')}>Rejected</button>
+        <button
+          onClick={() =>
+            setApplications(
+              [...applications].sort(
+                (a, b) => new Date(a.timestamp) - new Date(b.timestamp)
+              )
+            )
+          }
+        >
+          Oldest to Newest
+        </button>
+        <button
+          onClick={() =>
+            setApplications(
+              [...applications].sort(
+                (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
+              )
+            )
+          }
+        >
+          Newest to Oldest
+        </button>
       </div>
 
       {/* Application List */}
@@ -189,6 +212,10 @@ export default function JobApplication() {
             </div>
             <div>
               <strong>Position:</strong> {app.position}
+            </div>
+            <div>
+              <strong>Timestamp:</strong>{' '}
+              {new Date(app.timestamp).toLocaleString()}
             </div>
             <div>
               <strong>Status:</strong>{' '}

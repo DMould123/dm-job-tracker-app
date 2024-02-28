@@ -1,63 +1,62 @@
 /* Global Styles */
 body {
-  font-family: Arial, sans-serif; /* Set a fallback font */
-  margin: 0; /* Remove default margin */
-  padding: 0; /* Remove default padding */
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
 /* App Container */
 .app-container {
   max-width: 800px;
-  margin: 20px auto; /* Center the container vertically and horizontally */
+  margin: 20px auto;
   padding: 20px;
-  background-color: #f8f9fa; /* Light gray background */
-  border-radius: 8px; /* Add some border radius for softer edges */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle shadow for elevation */
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Logo */
 .app-logo {
   display: block;
-  margin: 0 auto 20px; /* Center the logo horizontally and add some bottom margin */
-  max-width: 100%;
+  margin: 0 auto 20px;
 }
 
 /* Header */
 .header {
   margin-top: 20px;
-  margin-bottom: 20px; /* Add some bottom margin */
+  margin-bottom: 20px;
   font-size: 24px;
   color: #333; /* Dark gray text */
 }
 
 /* Logged-in User */
 .logged-in-user {
-  margin-bottom: 20px; /* Add some bottom margin */
+  margin-bottom: 20px;
 }
 
 /* Form Styles */
 form {
-  margin-bottom: 20px; /* Add some bottom margin */
+  margin-bottom: 20px;
 }
 
 label {
   display: block;
-  margin-bottom: 5px; /* Add some bottom margin */
-  font-weight: bold; /* Make labels bold */
+  margin-bottom: 5px;
+  font-weight: bold;
 }
 
 input,
 select {
-  width: 100%; /* Make inputs and selects take full width */
+  width: 100%;
   padding: 10px;
   font-size: 16px;
   margin-top: 4px;
-  border: 1px solid #ced4da; /* Gray border */
+  border: 1px solid #ced4da;
   border-radius: 4px;
 }
 
 select {
-  appearance: none; /* Remove default appearance for selects */
+  appearance: none;
 }
 
 /* Buttons */
@@ -69,7 +68,7 @@ select {
   cursor: pointer;
   font-size: 16px;
   border-radius: 4px;
-  margin-top: 10px; /* Add some top margin */
+  margin-top: 10px;
 }
 
 .btn-danger {
@@ -83,17 +82,17 @@ select {
 }
 
 .application-list li {
-  border: 1px solid #ced4da; /* Gray border */
+  border: 1px solid #ced4da;
   border-radius: 4px;
   padding: 10px;
   margin-bottom: 10px;
-  background-color: #fff; /* White background */
+  background-color: #fff;
 }
 
 /* Application Filter Buttons */
 .application-filter-buttons {
-  display: flex; /* Make buttons display in a row */
-  flex-wrap: wrap; /* Wrap buttons if space is limited */
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .application-filter-buttons button {
@@ -104,11 +103,11 @@ select {
   cursor: pointer;
   border-radius: 4px;
   margin-right: 5px;
-  margin-bottom: 5px; /* Add some bottom margin */
+  margin-bottom: 5px;
 }
 
 .application-filter-buttons button:last-child {
-  margin-right: 0; /* Remove right margin for the last button */
+  margin-right: 0;
 }
 
 /* Responsive Styles */
@@ -119,18 +118,18 @@ select {
 
   input,
   select {
-    width: calc(100% - 20px); /* Adjust width to account for padding */
+    width: calc(100% - 20px);
   }
 
   .application-filter-buttons button {
-    margin-bottom: 10px; /* Add space between buttons in mobile view */
+    margin-bottom: 10px;
   }
 }
 
 /* Logout Button */
 .logout-btn {
-  background-color: #dc3545; /* Red color for logout button */
-  color: #fff; /* White text color */
+  background-color: #dc3545;
+  color: #fff;
   border: none;
   padding: 10px 20px;
   cursor: pointer;
