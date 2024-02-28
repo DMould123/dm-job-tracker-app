@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { MdDelete } from 'react-icons/md'
-import { FiEdit } from 'react-icons/fi'
+import { FiEdit, FiUser } from 'react-icons/fi'
+import { FaSignOutAlt } from 'react-icons/fa'
 import { useAuth } from '../context/AuthContext'
 import { db } from '../../firebase'
 import {
@@ -19,7 +20,7 @@ export default function JobApplication() {
   const [status, setStatus] = useState('applied')
   const [applications, setApplications] = useState([])
   const [filter, setFilter] = useState('all')
-  const { currentUser } = useAuth()
+  const { currentUser, logout } = useAuth()
 
   useEffect(() => {
     const fetchApplications = async () => {
@@ -112,8 +113,14 @@ export default function JobApplication() {
   // JSX rendering
   return (
     <div className="app-container">
+      <button className="btn logout-btn" onClick={logout}>
+        <FaSignOutAlt className="icon" /> Logout
+      </button>
       <h1>Job Application Tracker</h1>
-      <p>Welcome, {currentUser.email}!</p>
+      <p className="logged-in-user">
+        <FiUser className="user-icon" /> Welcome, {currentUser.email}!
+      </p>
+
       <form onSubmit={handleSubmit} className="new-application-form">
         <div className="new-application-form-row">
           <label htmlFor="company">Company:</label>
