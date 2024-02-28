@@ -13,6 +13,7 @@ import {
   arrayUnion,
   getDoc
 } from 'firebase/firestore'
+import { v4 as uuidv4 } from 'uuid' // Import UUID library
 
 export default function JobApplication() {
   const [company, setCompany] = useState('')
@@ -33,6 +34,9 @@ export default function JobApplication() {
             if (userData.applications) {
               setApplications(userData.applications)
             }
+          } else {
+            // If the document doesn't exist, create it
+            await setDoc(userRef, { applications: [] })
           }
         } catch (error) {
           console.error('Error fetching applications: ', error)
@@ -49,6 +53,7 @@ export default function JobApplication() {
     if (company.trim() === '' || position.trim() === '') return
 
     const newApplication = {
+      id: uuidv4(), // Generate unique ID
       company,
       position,
       status
@@ -76,9 +81,11 @@ export default function JobApplication() {
       if (currentUser) {
         const updatedApplications = applications.filter((app) => app.id !== id)
         const userRef = doc(db, 'users', currentUser.uid)
-        await updateDoc(userRef, {
-          applications: updatedApplications
-        })
+        await setDoc(
+          userRef,
+          { applications: updatedApplications },
+          { merge: true }
+        ) // Use setDoc with merge option
         setApplications(updatedApplications)
       }
     } catch (error) {
@@ -174,7 +181,9 @@ export default function JobApplication() {
           <li>No applications to display.</li>
         )}
         {filteredApplications.map((app, index) => (
-          <li key={index}>
+          <li key={app.id}>
+            {' '}
+            {/* Use unique ID */}
             <div>
               <strong>Company:</strong> {app.company}
             </div>
@@ -199,13 +208,39 @@ export default function JobApplication() {
             >
               <MdDelete /> Delete
             </button>
-
             <button
               className="btn btn-edit"
-              onClick={() => {
-                const newTitle = prompt('Edit Task:', task.title)
-                if (newTitle !== null && newTitle.trim() !== '') {
-                  handleEditTask(task.id, newTitle)
+              onClick={async () => {
+                const newCompany = prompt('Edit Company:', app.company)
+                const newPosition = prompt('Edit Position:', app.position)
+                const newStatus = prompt('Edit Status:', app.status)
+                if (
+                  newCompany !== null &&
+                  newCompany.trim() !== '' &&
+                  newPosition !== null &&
+                  newPosition.trim() !== '' &&
+                  newStatus !== null &&
+                  newStatus.trim() !== ''
+                ) {
+                  const updatedApplications = applications.map((item, idx) =>
+                    item.id === app.id
+                      ? {
+                          ...item,
+                          company: newCompany,
+                          position: newPosition,
+                          status: newStatus
+                        }
+                      : item
+                  )
+                  setApplications(updatedApplications) // Update local state
+                  if (currentUser) {
+                    const userRef = doc(db, 'users', currentUser.uid)
+                    await setDoc(
+                      userRef,
+                      { applications: updatedApplications },
+                      { merge: true }
+                    ) // Update Firestore
+                  }
                 }
               }}
             >
