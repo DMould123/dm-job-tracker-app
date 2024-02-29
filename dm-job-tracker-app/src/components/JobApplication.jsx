@@ -13,7 +13,7 @@ import {
   arrayUnion,
   getDoc
 } from 'firebase/firestore'
-import { v4 as uuidv4 } from 'uuid'
+import { v4 as uuidv4 } from 'uuid' // Import UUID library
 
 export default function JobApplication() {
   const [company, setCompany] = useState('')
@@ -21,6 +21,8 @@ export default function JobApplication() {
   const [status, setStatus] = useState('applied')
   const [applications, setApplications] = useState([])
   const [filter, setFilter] = useState('all')
+  const [sort, setSort] = useState('newest') // Newest to oldest by default
+  const [editedNotes, setEditedNotes] = useState('')
   const { currentUser, logout } = useAuth()
 
   useEffect(() => {
@@ -57,7 +59,8 @@ export default function JobApplication() {
       company,
       position,
       status,
-      timestamp: new Date().toISOString() // Add timestamp
+      timestamp: new Date().toISOString(), // Add timestamp
+      notes: 'New application added' // Add initial note
     }
 
     try {
@@ -66,7 +69,7 @@ export default function JobApplication() {
         await updateDoc(userRef, {
           applications: arrayUnion(newApplication)
         })
-        setApplications([...applications, newApplication])
+        setApplications([...applications, newApplication]) // Update local state
       }
     } catch (error) {
       console.error('Error adding document: ', error)
@@ -93,12 +96,18 @@ export default function JobApplication() {
       console.error('Error deleting document: ', error)
     }
   }
-
   // Update status function
   const handleStatusChange = async (id, newStatus) => {
     try {
       const updatedApplications = applications.map((app) =>
-        app.id === id ? { ...app, status: newStatus } : app
+        app.id === id
+          ? {
+              ...app,
+              status: newStatus,
+              timestamp: new Date().toISOString(),
+              notes: app.notes ? app.notes : 'Application status updated'
+            }
+          : app
       )
       if (currentUser) {
         const userRef = doc(db, 'users', currentUser.uid)
@@ -112,8 +121,52 @@ export default function JobApplication() {
     }
   }
 
+  // Edit application function
+  const handleEditApplication = async (
+    id,
+    newCompany,
+    newPosition,
+    newStatus,
+    newNotes
+  ) => {
+    try {
+      const updatedApplications = applications.map((app) =>
+        app.id === id
+          ? {
+              ...app,
+              company: newCompany,
+              position: newPosition,
+              status: newStatus,
+              timestamp: new Date().toISOString(),
+              notes: newNotes
+            }
+          : app
+      )
+      if (currentUser) {
+        const userRef = doc(db, 'users', currentUser.uid)
+        await updateDoc(userRef, {
+          applications: updatedApplications
+        })
+        setApplications(updatedApplications)
+      }
+    } catch (error) {
+      console.error('Error updating document: ', error)
+    }
+  }
+
+  // Sort applications function
+  const sortedApplications = applications.slice().sort((a, b) => {
+    const dateA = new Date(a.timestamp)
+    const dateB = new Date(b.timestamp)
+    if (sort === 'newest') {
+      return dateB - dateA
+    } else {
+      return dateA - dateB
+    }
+  })
+
   // Filtered applications
-  const filteredApplications = applications.filter((app) => {
+  const filteredApplications = sortedApplications.filter((app) => {
     if (filter === 'all') return true
     return app.status === filter
   })
@@ -173,28 +226,9 @@ export default function JobApplication() {
         <button onClick={() => setFilter('interview')}>Interview</button>
         <button onClick={() => setFilter('offer')}>Offer</button>
         <button onClick={() => setFilter('rejected')}>Rejected</button>
-        <button
-          onClick={() =>
-            setApplications(
-              [...applications].sort(
-                (a, b) => new Date(a.timestamp) - new Date(b.timestamp)
-              )
-            )
-          }
-        >
-          Oldest to Newest
-        </button>
-        <button
-          onClick={() =>
-            setApplications(
-              [...applications].sort(
-                (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
-              )
-            )
-          }
-        >
-          Newest to Oldest
-        </button>
+        {/* Sort Buttons */}
+        <button onClick={() => setSort('newest')}>Newest</button>
+        <button onClick={() => setSort('oldest')}>Oldest</button>
       </div>
 
       {/* Application List */}
@@ -205,17 +239,11 @@ export default function JobApplication() {
         )}
         {filteredApplications.map((app, index) => (
           <li key={app.id}>
-            {' '}
-            {/* Use unique ID */}
             <div>
               <strong>Company:</strong> {app.company}
             </div>
             <div>
               <strong>Position:</strong> {app.position}
-            </div>
-            <div>
-              <strong>Timestamp:</strong>{' '}
-              {new Date(app.timestamp).toLocaleString()}
             </div>
             <div>
               <strong>Status:</strong>{' '}
@@ -229,6 +257,13 @@ export default function JobApplication() {
                 <option value="rejected">Rejected</option>
               </select>
             </div>
+            <div>
+              <strong>Timestamp:</strong>{' '}
+              {new Date(app.timestamp).toLocaleString()}
+            </div>
+            <div>
+              <strong>Notes:</strong> {app.notes || 'No notes'}
+            </div>
             <button
               className="btn btn-danger"
               onClick={() => handleDeleteApplication(app.id)}
@@ -237,39 +272,15 @@ export default function JobApplication() {
             </button>
             <button
               className="btn btn-edit"
-              onClick={async () => {
-                const newCompany = prompt('Edit Company:', app.company)
-                const newPosition = prompt('Edit Position:', app.position)
-                const newStatus = prompt('Edit Status:', app.status)
-                if (
-                  newCompany !== null &&
-                  newCompany.trim() !== '' &&
-                  newPosition !== null &&
-                  newPosition.trim() !== '' &&
-                  newStatus !== null &&
-                  newStatus.trim() !== ''
-                ) {
-                  const updatedApplications = applications.map((item, idx) =>
-                    item.id === app.id
-                      ? {
-                          ...item,
-                          company: newCompany,
-                          position: newPosition,
-                          status: newStatus
-                        }
-                      : item
-                  )
-                  setApplications(updatedApplications) // Update local state
-                  if (currentUser) {
-                    const userRef = doc(db, 'users', currentUser.uid)
-                    await setDoc(
-                      userRef,
-                      { applications: updatedApplications },
-                      { merge: true }
-                    ) // Update Firestore
-                  }
-                }
-              }}
+              onClick={() =>
+                handleEditApplication(
+                  app.id,
+                  app.company,
+                  app.position,
+                  app.status,
+                  app.notes
+                )
+              }
             >
               <FiEdit /> Edit
             </button>
