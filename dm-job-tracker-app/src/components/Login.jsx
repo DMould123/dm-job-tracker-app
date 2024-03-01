@@ -36,6 +36,7 @@ export default function Login() {
 
   return (
     <div className={createAccount ? 'login-page create-account' : 'login-page'}>
+      <h2>{createAccount ? 'Create Account' : 'Login'}</h2>
       <input
         className="input"
         placeholder="Email"
@@ -58,13 +59,15 @@ export default function Login() {
         </div>
       </div>
       <button className="button" onClick={handleSubmit}>
-        <p className="buttonText">Submit</p>
+        {createAccount ? 'Create Account' : 'Login'}
       </button>
       <button
         className="toggleButton"
         onClick={() => setCreateAccount(!createAccount)}
       >
-        <p className="buttonText">{createAccount ? 'Sign In' : 'Sign Up'}</p>
+        {createAccount
+          ? 'Already have an account? Sign in'
+          : 'Create an account'}
       </button>
     </div>
   )
