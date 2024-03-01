@@ -36,7 +36,6 @@ function Footer() {
               className="social-icon"
               style={{ width: '24px', height: '24px' }}
             />{' '}
-            {/* Add style for width and height */}
           </a>
         </div>
         <div className="copyright">
