@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
+import { RiEyeCloseLine, RiEyeLine } from 'react-icons/ri'
 
 export default function Login() {
   const [createAccount, setCreateAccount] = useState(false)
   const [userCreds, setUserCreds] = useState({ email: '', password: '' })
+  const [showPassword, setShowPassword] = useState(false)
 
   const { signup, login } = useAuth()
 
@@ -33,67 +35,37 @@ export default function Login() {
   }
 
   return (
-    <div style={styles.container}>
+    <div className={createAccount ? 'login-page create-account' : 'login-page'}>
       <input
-        style={styles.input}
+        className="input"
         placeholder="Email"
         value={userCreds.email}
         onChange={(e) => updateEmail(e)}
-      ></input>
-      <input
-        style={styles.input}
-        placeholder="Password"
-        type="password"
-        value={userCreds.password}
-        onChange={(e) => updatePassword(e)}
-      ></input>
-      <button style={styles.button} onClick={handleSubmit}>
-        <p style={styles.buttonText}>Submit</p>
+      />
+      <div className="password-container">
+        <input
+          className="input password-input"
+          placeholder="Password"
+          type={showPassword ? 'text' : 'password'}
+          value={userCreds.password}
+          onChange={(e) => updatePassword(e)}
+        />
+        <div
+          className="password-toggle"
+          onClick={() => setShowPassword(!showPassword)}
+        >
+          {showPassword ? <RiEyeCloseLine /> : <RiEyeLine />}
+        </div>
+      </div>
+      <button className="button" onClick={handleSubmit}>
+        <p className="buttonText">Submit</p>
       </button>
       <button
-        style={styles.toggleButton}
+        className="toggleButton"
         onClick={() => setCreateAccount(!createAccount)}
       >
-        <p style={styles.buttonText}>{createAccount ? 'Sign In' : 'Sign Up'}</p>
+        <p className="buttonText">{createAccount ? 'Sign In' : 'Sign Up'}</p>
       </button>
     </div>
   )
-}
-
-const styles = {
-  container: {
-    maxWidth: '300px',
-    margin: 'auto',
-    padding: '20px',
-    textAlign: 'center'
-  },
-  input: {
-    margin: '10px 0',
-    padding: '8px',
-    width: '100%',
-    boxSizing: 'border-box'
-  },
-  button: {
-    backgroundColor: '#1a1a1a',
-    border: 'none',
-    borderRadius: '5px',
-    color: '#fff',
-    cursor: 'pointer',
-    padding: '10px',
-    width: '100%',
-    boxSizing: 'border-box'
-  },
-  toggleButton: {
-    backgroundColor: '#646cff',
-    border: 'none',
-    borderRadius: '5px',
-    color: '#fff',
-    cursor: 'pointer',
-    padding: '10px',
-    width: '100%',
-    boxSizing: 'border-box'
-  },
-  buttonText: {
-    margin: 0
-  }
 }

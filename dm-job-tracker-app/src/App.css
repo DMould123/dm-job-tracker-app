@@ -174,3 +174,34 @@ select {
   margin: 0;
   color: #666;
 }
+
+/* Login Page Styles */
+.login-page {
+  background-color: #f0f0f0;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.input {
+  margin: 10px 0;
+  padding: 8px 35px 8px 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.password-container {
+  position: relative;
+}
+
+.password-input {
+  width: 100%;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
