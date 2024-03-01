@@ -17,15 +17,31 @@ export default function Login() {
     setUserCreds({ ...userCreds, password: e.target.value })
   }
 
+  function generateRandomPassword(length = 12) {
+    const charset =
+      'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+'
+
+    let password = ''
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * charset.length)
+      password += charset[randomIndex]
+    }
+
+    return password
+  }
+
+  function generateStrongPassword() {
+    const strongPassword = generateRandomPassword()
+    setUserCreds({ ...userCreds, password: strongPassword })
+  }
+
   function handleSubmit(e) {
     e.preventDefault()
-    // prevents signup if form not completed
     if (!userCreds.email || !userCreds.password) {
       return
     }
 
     if (createAccount) {
-      // recommended to add password regex check in here
       console.log('Registering')
       signup(userCreds.email, userCreds.password)
     } else {
@@ -58,6 +74,14 @@ export default function Login() {
           {showPassword ? <RiEyeCloseLine /> : <RiEyeLine />}
         </div>
       </div>
+      {createAccount && (
+        <button
+          className="generate-password-button"
+          onClick={generateStrongPassword}
+        >
+          Generate Strong Password
+        </button>
+      )}
       <button className="button" onClick={handleSubmit}>
         {createAccount ? 'Create Account' : 'Login'}
       </button>
