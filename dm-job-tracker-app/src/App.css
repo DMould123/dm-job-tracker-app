@@ -80,8 +80,8 @@ select {
   background-color: #dc3545;
 }
 
-.icon {
-  vertical-align: middle;
+.logout-btn:hover {
+  background-color: #d60a1e;
 }
 
 /* Application List */
