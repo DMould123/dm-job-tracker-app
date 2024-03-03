@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { MdDelete } from 'react-icons/md'
-import { FiEdit, FiUser } from 'react-icons/fi'
+import { FiEdit, FiUser, FiPlus } from 'react-icons/fi'
 import { FaSignOutAlt } from 'react-icons/fa'
 import { useAuth } from '../context/AuthContext'
 import { db } from '../../firebase'
@@ -216,7 +216,9 @@ export default function JobApplication() {
             <option value="rejected">Rejected</option>
           </select>
         </div>
-        <button className="btn">Add Application</button>
+        <button className="btn btn-add">
+          <FiPlus className="icon" /> Add Application
+        </button>
       </form>
 
       {/* Application Filter Buttons */}

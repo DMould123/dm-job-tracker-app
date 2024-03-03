@@ -71,8 +71,17 @@ select {
   margin-top: 10px;
 }
 
+.btn-delete,
+.btn-edit {
+  margin-left: 10px;
+}
+
 .btn-danger {
   background-color: #dc3545;
+}
+
+.icon {
+  vertical-align: middle;
 }
 
 /* Application List */

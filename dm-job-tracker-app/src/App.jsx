@@ -1,6 +1,6 @@
 import React from 'react'
 import { useAuth } from './context/AuthContext'
-import Login from './components/Login'
+import Login from './components/Login/Login'
 import JobApplication from './components/JobApplication'
 import Footer from './components/Footer'
 import './App.css'
