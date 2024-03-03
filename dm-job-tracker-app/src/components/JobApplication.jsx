@@ -13,7 +13,7 @@ import {
   arrayUnion,
   getDoc
 } from 'firebase/firestore'
-import { v4 as uuidv4 } from 'uuid' // Import UUID library
+import { v4 as uuidv4 } from 'uuid'
 
 export default function JobApplication() {
   const [company, setCompany] = useState('')
@@ -21,7 +21,7 @@ export default function JobApplication() {
   const [status, setStatus] = useState('applied')
   const [applications, setApplications] = useState([])
   const [filter, setFilter] = useState('all')
-  const [sort, setSort] = useState('newest') // Newest to oldest by default
+  const [sort, setSort] = useState('newest')
   const [editedNotes, setEditedNotes] = useState('')
   const { currentUser, logout } = useAuth()
 
@@ -96,6 +96,7 @@ export default function JobApplication() {
       console.error('Error deleting document: ', error)
     }
   }
+
   // Update status function
   const handleStatusChange = async (id, newStatus) => {
     try {
@@ -171,6 +172,18 @@ export default function JobApplication() {
     return app.status === filter
   })
 
+  // Group applications by month
+  const applicationsByMonth = filteredApplications.reduce((acc, curr) => {
+    const month = new Date(curr.timestamp).toLocaleString('default', {
+      month: 'long'
+    })
+    if (!acc[month]) {
+      acc[month] = []
+    }
+    acc[month].push(curr)
+    return acc
+  }, {})
+
   // JSX rendering
   return (
     <div className="job-application-container">
@@ -235,60 +248,62 @@ export default function JobApplication() {
 
       {/* Application List */}
       <h1 className="header">Job Applications</h1>
-      <ul className="application-list">
-        {filteredApplications.length === 0 && (
-          <li>No applications to display.</li>
-        )}
-        {filteredApplications.map((app, index) => (
-          <li key={app.id}>
-            <div>
-              <strong>Company:</strong> {app.company}
-            </div>
-            <div>
-              <strong>Position:</strong> {app.position}
-            </div>
-            <div>
-              <strong>Status:</strong>{' '}
-              <select
-                value={app.status}
-                onChange={(e) => handleStatusChange(app.id, e.target.value)}
-              >
-                <option value="applied">Applied</option>
-                <option value="interview">Interview</option>
-                <option value="offer">Offer</option>
-                <option value="rejected">Rejected</option>
-              </select>
-            </div>
-            <div>
-              <strong>Timestamp:</strong>{' '}
-              {new Date(app.timestamp).toLocaleString()}
-            </div>
-            <div>
-              <strong>Notes:</strong> {app.notes || 'No notes'}
-            </div>
-            <button
-              className="btn btn-danger"
-              onClick={() => handleDeleteApplication(app.id)}
-            >
-              <MdDelete /> Delete
-            </button>
-            <button
-              className="btn btn-edit"
-              onClick={() =>
-                handleEditApplication(
-                  app.id,
-                  app.company,
-                  app.position,
-                  app.status,
-                  app.notes
-                )
-              }
-            >
-              <FiEdit /> Edit
-            </button>
-          </li>
-        ))}
-      </ul>
+      {Object.entries(applicationsByMonth).map(([month, apps]) => (
+        <div key={month}>
+          <h2>{month}</h2>
+          <ul className="application-list">
+            {apps.map((app, index) => (
+              <li key={app.id}>
+                <div>
+                  <strong>Company:</strong> {app.company}
+                </div>
+                <div>
+                  <strong>Position:</strong> {app.position}
+                </div>
+                <div>
+                  <strong>Status:</strong>{' '}
+                  <select
+                    value={app.status}
+                    onChange={(e) => handleStatusChange(app.id, e.target.value)}
+                  >
+                    <option value="applied">Applied</option>
+                    <option value="interview">Interview</option>
+                    <option value="offer">Offer</option>
+                    <option value="rejected">Rejected</option>
+                  </select>
+                </div>
+                <div>
+                  <strong>Timestamp:</strong>{' '}
+                  {new Date(app.timestamp).toLocaleString()}
+                </div>
+                <div>
+                  <strong>Notes:</strong> {app.notes || 'No notes'}
+                </div>
+                <button
+                  className="btn btn-danger"
+                  onClick={() => handleDeleteApplication(app.id)}
+                >
+                  <MdDelete /> Delete
+                </button>
+                <button
+                  className="btn btn-edit"
+                  onClick={() =>
+                    handleEditApplication(
+                      app.id,
+                      app.company,
+                      app.position,
+                      app.status,
+                      app.notes
+                    )
+                  }
+                >
+                  <FiEdit /> Edit
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
     </div>
   )
 }
