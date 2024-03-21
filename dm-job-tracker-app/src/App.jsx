@@ -1,8 +1,8 @@
 import React from 'react'
 import { useAuth } from './context/AuthContext'
 import Login from './components/Login/Login'
-import JobApplication from './components/JobApplication'
-import Footer from './components/Footer'
+import JobApplication from './components/JobApplication/JobApplication'
+import Footer from './components/Footer/Footer'
 import './App.css'
 import logo from './img/job-tracker-logo.png'
 

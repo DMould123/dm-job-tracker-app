@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { MdDelete } from 'react-icons/md'
 import { FiEdit, FiUser, FiPlus } from 'react-icons/fi'
 import { FaSignOutAlt } from 'react-icons/fa'
-import { useAuth } from '../context/AuthContext'
-import { db } from '../../firebase'
+import { useAuth } from '../../context/AuthContext'
+import { db } from '../../../firebase'
 import {
   collection,
   doc,
