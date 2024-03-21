@@ -12,13 +12,13 @@ DM Job Tracker App  aims to:
 - 🔒 Provide authentication functionality for secure access.
 - 🚀 Showcase React.js proficiency and best practices.
 
-## Tech Stack
+## Tech Stack 💻  
 
 - React & Vite
 - Firebase (Authentication, Firestore)
 - React Icons
 
-## Installation & Steup
+##  Installation & Setup 🔧
 
 1. Clone the repository to your local machine:
 
